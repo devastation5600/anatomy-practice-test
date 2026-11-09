@@ -263,6 +263,99 @@ button:active { transform: scale(0.97); }
   background: #eafbf1;
 }
 
+.dragdrop-hint {
+  font-size: 0.85rem;
+  color: #6b7a86;
+  margin: 0 0 10px;
+}
+
+.term-bank {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 12px;
+  margin-bottom: 16px;
+  background: #f3f8fb;
+  border: 1px dashed var(--border);
+  border-radius: 10px;
+  min-height: 46px;
+}
+
+.term-chip {
+  background: var(--navy);
+  color: white;
+  font-size: 0.88rem;
+  font-weight: 600;
+  padding: 8px 14px;
+  border-radius: 999px;
+  cursor: grab;
+  user-select: none;
+  transition: opacity 0.1s ease, box-shadow 0.1s ease;
+}
+.term-chip:active { cursor: grabbing; }
+.term-chip.dragging { opacity: 0.4; }
+.term-chip.selected {
+  box-shadow: 0 0 0 3px var(--amber);
+}
+
+.dropzone-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.dropzone-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.dz-desc {
+  flex: 1 1 260px;
+  font-size: 0.95rem;
+}
+
+.dropzone-slot {
+  flex: 0 0 200px;
+  min-height: 42px;
+  border: 2px dashed var(--border);
+  border-radius: 10px;
+  background: #fbfdff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+}
+
+.dropzone-slot:empty::before {
+  content: "drop here";
+  color: #9fb0ba;
+  font-size: 0.8rem;
+  font-style: italic;
+}
+
+.dropzone-slot .term-chip {
+  cursor: pointer;
+}
+
+.dropzone-slot.correct {
+  border-color: var(--green);
+  border-style: solid;
+  background: #eafbf1;
+}
+.dropzone-slot.incorrect {
+  border-color: var(--red);
+  border-style: solid;
+  background: #fdecee;
+}
+
+@media (max-width: 560px) {
+  .dropzone-row { flex-direction: column; align-items: stretch; }
+  .dropzone-slot { flex-basis: auto; }
+}
+
 .input-answers {
   display: flex;
   flex-wrap: wrap;
