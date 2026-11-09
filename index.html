@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Nervous System Practice Tests</title>
+<meta name="description" content="Self-graded anatomy practice tests: nervous system basics (CNS/PNS, somatic/autonomic, spinal cord, nerve types) and brain anatomy &amp; neuron histology (meninges, lobes, speech areas, neuron structure)." />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<header class="site-header">
+  <h1>Nervous System &mdash; Practice Tests</h1>
+  <p id="sectionIntro"></p>
+  <p>Click <strong>Check Answer</strong> after each question for a full worked solution &mdash; and if you miss it, a note on exactly where the mistake likely happened.</p>
+  <nav class="section-tabs no-print" id="sectionTabs" aria-label="Practice test sections"></nav>
+</header>
+
+<main>
+  <div class="toolbar no-print">
+    <span class="score-pill" id="scorePill">Score: not started</span>
+    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+    <span id="progressLabel" style="font-size:0.85rem;color:#4a5a66;">0 answered</span>
+    <button class="btn-primary" id="finishBtn">Finish &amp; Show Summary</button>
+    <button class="btn-print" id="printBtn">🖨️ Print / Save as PDF</button>
+    <button class="btn-ghost" id="resetBtn">Reset</button>
+  </div>
+
+  <div class="jump-nav no-print" id="jumpNav"></div>
+
+  <div class="final-summary" id="finalSummary"></div>
+
+  <div id="quizContainer"></div>
+
+  <div class="toolbar no-print" style="justify-content:center;">
+    <button class="btn-primary" id="finishBtn2" onclick="document.getElementById('finishBtn').click()">Finish &amp; Show Summary</button>
+    <button class="btn-print" onclick="window.print()">🖨️ Print / Save as PDF</button>
+  </div>
+</main>
+
+<footer class="site-footer">
+  Made for practice &mdash; work through every question, check your answer, and read the full solution (even on the ones you get right). Good luck! 🍀
+</footer>
+
+<script src="basics.js"></script>
+<script src="brain.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
