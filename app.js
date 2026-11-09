@@ -16,14 +16,24 @@ const SECTIONS = [
     title: "Brain Anatomy &amp; Histology",
     questions: BRAIN_QUESTIONS,
     intro: "Covers the meninges (dura, arachnoid, pia mater), cerebrum structures (corpus callosum, gyrus/sulcus/fissure, brain stem), the four lobes and their functions, Broca's &amp; Wernicke's areas, neuron structure (dendrites, axon, myelin sheath), and neuron types."
+  },
+  {
+    key: "lbl",
+    hash: "label",
+    title: "Label the Diagrams",
+    questions: LABEL_QUESTIONS,
+    intro: "Drag-and-drop labeling: name the parts of the nervous system organization chart, a neuron, and the brain. Works with a mouse drag, or tap a term then tap its box on a phone/tablet."
   }
 ];
 
 const state = {
   active: SECTIONS[0],
   // per section, per question: { correct: bool, pickedIndex / pickedSet / values }
-  results: { bas: {}, brn: {} }
+  results: { bas: {}, brn: {}, lbl: {} }
 };
+
+let selectedChip = null;
+let draggedChip = null;
 
 function $(sel, root = document) { return root.querySelector(sel); }
 function $all(sel, root = document) { return Array.from(root.querySelectorAll(sel)); }
@@ -79,6 +89,29 @@ function choiceRowsHTML(sec, q) {
   </div>`;
 }
 
+function dragdropHTML(sec, q) {
+  const terms = q.zones.map(z => z.correct).slice();
+  // simple shuffle so the bank order doesn't just match the answer order
+  for (let i = terms.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [terms[i], terms[j]] = [terms[j], terms[i]];
+  }
+  return `
+    <p class="dragdrop-hint no-print">Drag a term onto its box &mdash; or on a phone, tap a term, then tap the box.</p>
+    <div class="term-bank" id="bank-${qid(sec, q)}">
+      ${terms.map(t => `<div class="term-chip" draggable="true" data-term="${t}">${t}</div>`).join("")}
+    </div>
+    <div class="dropzone-list">
+      ${q.zones.map(z => `
+        <div class="dropzone-row">
+          <span class="dz-desc">${z.desc}</span>
+          <div class="dropzone-slot" id="slot-${qid(sec, q)}-${z.key}" data-zone="${z.key}"></div>
+        </div>
+      `).join("")}
+    </div>
+  `;
+}
+
 function proofTableHTML(rows) {
   return `<table class="proof-table" style="width:100%;border-collapse:collapse;margin:10px 0 16px;font-size:0.92rem;">
     <thead><tr>
@@ -113,6 +146,8 @@ function renderQuestion(sec, q) {
 
   if (q.type === "input") {
     bodyHTML += fieldRowHTML(sec, q);
+  } else if (q.type === "dragdrop") {
+    bodyHTML += dragdropHTML(sec, q);
   } else {
     bodyHTML += choiceRowsHTML(sec, q);
   }
@@ -176,6 +211,25 @@ function gradeQuestion(sec, q) {
     });
     return { correct: allCorrect, values, fieldStatus };
   }
+  if (q.type === "dragdrop") {
+    const values = {};
+    let allFilled = true;
+    q.zones.forEach(z => {
+      const slot = document.getElementById(`slot-${qid(sec, q)}-${z.key}`);
+      const chip = slot ? slot.querySelector(".term-chip") : null;
+      values[z.key] = chip ? chip.dataset.term : null;
+      if (!chip) allFilled = false;
+    });
+    if (!allFilled) return null;
+    let allCorrect = true;
+    const fieldStatus = {};
+    q.zones.forEach(z => {
+      const ok = values[z.key] === z.correct;
+      fieldStatus[z.key] = ok;
+      if (!ok) allCorrect = false;
+    });
+    return { correct: allCorrect, values, fieldStatus };
+  }
   return null;
 }
 
@@ -219,6 +273,14 @@ function renderFeedback(sec, q, result) {
         }
       });
     }
+    if (q.type === "dragdrop" && result.fieldStatus) {
+      const wrong = q.zones.filter(z => !result.fieldStatus[z.key]);
+      if (wrong.length) {
+        html += `<div class="why-wrong"><strong>Not quite right:</strong><ul>${wrong.map(z =>
+          `<li>&ldquo;${z.desc}&rdquo; &mdash; you put <strong>${result.values[z.key]}</strong>, the correct term is <strong>${z.correct}</strong>.</li>`
+        ).join("")}</ul></div>`;
+      }
+    }
   }
 
   html += `<h4>Full Worked Solution</h4><ol>${q.explanation.map(s => `<li>${s}</li>`).join("")}</ol>`;
@@ -244,6 +306,12 @@ function renderFeedback(sec, q, result) {
       const el = document.getElementById(`f-${qid(sec, q)}-${f.key}`);
       el.classList.remove("correct", "incorrect");
       el.classList.add(result.fieldStatus[f.key] ? "correct" : "incorrect");
+    });
+  } else if (q.type === "dragdrop") {
+    q.zones.forEach(z => {
+      const slot = document.getElementById(`slot-${qid(sec, q)}-${z.key}`);
+      slot.classList.remove("correct", "incorrect");
+      slot.classList.add(result.fieldStatus[z.key] ? "correct" : "incorrect");
     });
   }
 }
@@ -324,6 +392,86 @@ function renderFinalSummary() {
   summary.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
+function clearChipSelection() {
+  if (selectedChip) selectedChip.classList.remove("selected");
+  selectedChip = null;
+}
+
+function placeChip(chip, slot) {
+  const card = slot.closest(".question-card");
+  if (!card || chip.closest(".question-card") !== card) return;
+  const bank = card.querySelector(".term-bank");
+  const existing = slot.querySelector(".term-chip");
+  if (existing && existing !== chip) bank.appendChild(existing);
+  slot.appendChild(chip);
+  slot.classList.remove("correct", "incorrect");
+}
+
+function returnChipToBank(chip) {
+  const card = chip.closest(".question-card");
+  const bank = card.querySelector(".term-bank");
+  bank.appendChild(chip);
+}
+
+function setupDragDrop(container) {
+  container.addEventListener("dragstart", (e) => {
+    const chip = e.target.closest(".term-chip");
+    if (!chip) return;
+    draggedChip = chip;
+    chip.classList.add("dragging");
+    e.dataTransfer.effectAllowed = "move";
+    e.dataTransfer.setData("text/plain", chip.dataset.term || "");
+  });
+
+  container.addEventListener("dragend", (e) => {
+    const chip = e.target.closest(".term-chip");
+    if (chip) chip.classList.remove("dragging");
+    draggedChip = null;
+  });
+
+  container.addEventListener("dragover", (e) => {
+    const slot = e.target.closest(".dropzone-slot");
+    if (!slot) return;
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
+  });
+
+  container.addEventListener("drop", (e) => {
+    const slot = e.target.closest(".dropzone-slot");
+    if (!slot || !draggedChip) return;
+    e.preventDefault();
+    placeChip(draggedChip, slot);
+  });
+
+  container.addEventListener("click", (e) => {
+    const chip = e.target.closest(".term-chip");
+    const slot = e.target.closest(".dropzone-slot");
+
+    if (chip && chip.parentElement.classList.contains("term-bank")) {
+      if (selectedChip === chip) {
+        clearChipSelection();
+        return;
+      }
+      clearChipSelection();
+      selectedChip = chip;
+      chip.classList.add("selected");
+      return;
+    }
+
+    if (slot) {
+      const existing = slot.querySelector(".term-chip");
+      if (existing && !selectedChip) {
+        returnChipToBank(existing);
+        return;
+      }
+      if (selectedChip) {
+        placeChip(selectedChip, slot);
+        clearChipSelection();
+      }
+    }
+  });
+}
+
 function showSection(sec) {
   state.active = sec;
   SECTIONS.forEach(s => {
@@ -347,6 +495,7 @@ function init() {
     container.appendChild(set);
   });
   renderTabs();
+  setupDragDrop(container);
 
   container.addEventListener("click", (e) => {
     const btn = e.target.closest("button[data-check]");
