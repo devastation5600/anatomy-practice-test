@@ -206,6 +206,20 @@ button:active { transform: scale(0.97); }
   font-size: 1.02rem;
 }
 
+.mnemonic-list {
+  margin: 0;
+  padding-left: 22px;
+}
+.mnemonic-list li {
+  margin-bottom: 6px;
+  font-size: 0.96rem;
+}
+.mnemonic-list li:first-child {
+  font-size: 1.05rem;
+  color: var(--navy);
+  margin-bottom: 10px;
+}
+
 .q-prompt .given {
   display: block;
   margin-top: 6px;
