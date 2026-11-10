@@ -30,13 +30,21 @@ const SECTIONS = [
     title: "Cranial Nerves &amp; Nerve Impulse",
     questions: CRANIAL_QUESTIONS,
     intro: "Covers nerve structure (endoneurium, perineurium, epineurium, fascicle), all 12 cranial nerves (name, sensory/motor/both, function), and how a nerve impulse travels: resting potential, depolarization, repolarization, saltatory conduction, and the synapse."
+  },
+  {
+    key: "mem",
+    hash: "memory",
+    title: "Memory Tricks",
+    questions: MEMORY_TRICKS,
+    reference: true,
+    intro: "Not graded &mdash; mnemonics, abbreviations, and homophone tricks for the stuff that's hardest to just memorize: the order of the 12 cranial nerves, sensory/motor/both, and the other commonly-confused pairs."
   }
 ];
 
 const state = {
   active: SECTIONS[0],
   // per section, per question: { correct: bool, pickedIndex / pickedSet / values }
-  results: { bas: {}, brn: {}, lbl: {}, crn: {} }
+  results: { bas: {}, brn: {}, lbl: {}, crn: {}, mem: {} }
 };
 
 let selectedChip = null;
@@ -138,7 +146,7 @@ function renderQuestion(sec, q) {
 
   let bodyHTML = `
     <div class="q-head">
-      <span class="q-number">Q${q.id}</span>
+      <span class="q-number">${q.type === "note" ? "💡" : `Q${q.id}`}</span>
       <span class="q-topic">${q.topic}</span>
     </div>
     <p class="q-prompt">${q.prompt}${q.given ? `<span class="given">${q.given}</span>` : ""}</p>
@@ -149,6 +157,12 @@ function renderQuestion(sec, q) {
   }
   if (q.given2table) {
     bodyHTML += proofTableHTML(q.given2table);
+  }
+
+  if (q.type === "note") {
+    bodyHTML += `<ul class="mnemonic-list">${q.points.map(p => `<li>${p}</li>`).join("")}</ul>`;
+    card.innerHTML = bodyHTML;
+    return card;
   }
 
   if (q.type === "input") {
@@ -490,6 +504,10 @@ function showSection(sec) {
   document.title = `${sec.title.replace("&amp;", "&")} Practice Test`;
   renderJumpNav();
   updateScorePill();
+
+  const isRef = !!sec.reference;
+  $all(".toolbar").forEach(el => { el.style.display = isRef ? "none" : ""; });
+  $("#jumpNav").style.display = isRef ? "none" : "";
 }
 
 function init() {
