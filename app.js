@@ -23,13 +23,20 @@ const SECTIONS = [
     title: "Label the Diagrams",
     questions: LABEL_QUESTIONS,
     intro: "Drag-and-drop labeling: name the parts of the nervous system organization chart, a neuron, and the brain. Works with a mouse drag, or tap a term then tap its box on a phone/tablet."
+  },
+  {
+    key: "crn",
+    hash: "cranial",
+    title: "Cranial Nerves &amp; Nerve Impulse",
+    questions: CRANIAL_QUESTIONS,
+    intro: "Covers nerve structure (endoneurium, perineurium, epineurium, fascicle), all 12 cranial nerves (name, sensory/motor/both, function), and how a nerve impulse travels: resting potential, depolarization, repolarization, saltatory conduction, and the synapse."
   }
 ];
 
 const state = {
   active: SECTIONS[0],
   // per section, per question: { correct: bool, pickedIndex / pickedSet / values }
-  results: { bas: {}, brn: {}, lbl: {} }
+  results: { bas: {}, brn: {}, lbl: {}, crn: {} }
 };
 
 let selectedChip = null;
