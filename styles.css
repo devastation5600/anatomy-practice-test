@@ -559,3 +559,6 @@ footer.site-footer {
 .math-active .progress-fill { background: #a32768; }
 .math-active .diagram-wrap svg { width: 100%; max-width: 340px; height: auto; }
 .math-active .proof-table { overflow-wrap: anywhere; }
+.math-active .section-tab:not(.active) { background: #fff; color: #70204a; border-color: #d69ab9; }
+.math-active .section-tab:not(.active):hover { background: #f9d7e8; }
+.math-active .section-tab:focus-visible { outline: 3px solid #54213e; outline-offset: 3px; }
