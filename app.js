@@ -6,7 +6,7 @@ const SECTIONS = [
   {
     key: "math", hash: "math", title: "Math · Geometry",
     questions: MATH_QUESTIONS,
-    intro: "12 questions covering trapezoid proofs, base angles, midsegments, parallelogram vertices, rectangle proofs, and square diagonals. New-number practice for worksheet #61, #63, #64, #90, #91, and #92. Work on paper first, then check each answer."
+    intro: "40 questions covering trapezoid proofs, base angles, midsegments, parallelogram vertices, rectangle proofs, and square diagonals. New-number practice for worksheet #61, #63, #64, #90, #91, and #92. Work on paper first, then check each answer."
   },
   {
     key: "bas",

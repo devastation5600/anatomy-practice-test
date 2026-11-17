@@ -78,3 +78,11 @@ fourth vertices, rectangle proofs, and square diagonals. Question numbers
 match the printable 12-question practice packet; some free responses are
 adapted to select-all or multiple choice for browser grading. Worked
 solutions appear after Check Answer. Existing anatomy sections are retained.
+
+
+### Expanded geometry bank
+The Math section now has 40 questions: the original 12 plus 28 distinct
+problems (Q13–Q40) with worked solutions. Added variations include proof
+error analysis, included angles, supplementary-angle algebra, missing bases,
+ordered/unordered parallelogram vertices, rectangle counterexamples, and
+square centers/diagonals. #119 remains intentionally excluded.
