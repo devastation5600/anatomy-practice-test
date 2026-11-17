@@ -4,6 +4,11 @@
 
 const SECTIONS = [
   {
+    key: "math", hash: "math", title: "Math · Geometry",
+    questions: MATH_QUESTIONS,
+    intro: "12 questions covering trapezoid proofs, base angles, midsegments, parallelogram vertices, rectangle proofs, and square diagonals. New-number practice for worksheet #61, #63, #64, #90, #91, and #92. Work on paper first, then check each answer."
+  },
+  {
     key: "bas",
     hash: "basics",
     title: "Nervous System Basics",
@@ -44,7 +49,7 @@ const SECTIONS = [
 const state = {
   active: SECTIONS[0],
   // per section, per question: { correct: bool, pickedIndex / pickedSet / values }
-  results: { bas: {}, brn: {}, lbl: {}, crn: {}, mem: {} }
+  results: { math: {}, bas: {}, brn: {}, lbl: {}, crn: {}, mem: {} }
 };
 
 let selectedChip = null;
@@ -190,8 +195,8 @@ function getNumericValue(sec, q, key) {
   if (!el) return null;
   const raw = el.value.trim().replace(/[°\s]/g, "").replace(/[−–]/g, "-");
   if (raw === "") return null;
-  const num = parseFloat(raw);
-  return isNaN(num) ? null : num;
+  const num = Number(raw);
+  return Number.isFinite(num) ? num : null;
 }
 
 function closeEnough(a, b, tol = 0.05) {
@@ -495,6 +500,7 @@ function setupDragDrop(container) {
 
 function showSection(sec) {
   state.active = sec;
+  document.body.classList.toggle("math-active", sec.key === "math");
   SECTIONS.forEach(s => {
     $(`#set-${s.key}`).hidden = s !== sec;
     $(`#tab-${s.key}`).classList.toggle("active", s === sec);
@@ -542,7 +548,7 @@ function init() {
   });
 
   const fromHash = SECTIONS.find(s => `#${s.hash}` === window.location.hash);
-  showSection(fromHash || SECTIONS[0]);
+  showSection(fromHash || SECTIONS.find(s => s.key === "bas"));
 }
 
 document.addEventListener("DOMContentLoaded", init);

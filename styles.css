@@ -550,3 +550,12 @@ footer.site-footer {
   .final-summary { display: block !important; box-shadow: none; }
   a[href]:after { content: ""; }
 }
+
+/* A pink accent for the Math section; anatomy styling stays unchanged. */
+.math-active .site-header { background: #fce9f2; color: #54213e; }
+.math-active .site-header h1 { color: #8c1853; }
+.math-active .section-tab.active, .math-active .btn-primary, .math-active .btn-check { background: #a32768; color: white; }
+.math-active .q-number { background: #a32768; color: white; }
+.math-active .progress-fill { background: #a32768; }
+.math-active .diagram-wrap svg { width: 100%; max-width: 340px; height: auto; }
+.math-active .proof-table { overflow-wrap: anywhere; }

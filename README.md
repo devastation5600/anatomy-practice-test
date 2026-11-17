@@ -68,3 +68,13 @@ All question content lives in `basics.js` (`BASICS_QUESTIONS`) and
 has a prompt, answer choices, a full worked explanation, and notes for
 common wrong answers. Add a new object to either array following the
 same shape to extend the test; no other file needs to change.
+
+
+## Math / Geometry section (2026-11-17)
+Open `#math` for 12 self-grading questions based on worksheet #61, #63,
+#64, #90, #91, and #92. #119 is intentionally excluded. Includes trapezoid
+proofs and diagrams, base-angle algebra, midsegments, parallelogram
+fourth vertices, rectangle proofs, and square diagonals. Question numbers
+match the printable 12-question practice packet; some free responses are
+adapted to select-all or multiple choice for browser grading. Worked
+solutions appear after Check Answer. Existing anatomy sections are retained.
